@@ -25,6 +25,7 @@ contract Lottery is VRFConsumerBase, Ownable {
         CALCULATING_WINNER
     }
     LOTTERY_STATE public lottery_state;
+    event RequestedRandomness(bytes32 requestId);
 
     constructor(
         address _priceFeedAddress,
@@ -71,7 +72,9 @@ contract Lottery is VRFConsumerBase, Ownable {
         lottery_state = LOTTERY_STATE.CALCULATING_WINNER;
         // This returns a byte32 named 'requestId'
         // See https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.6/VRFConsumerBase.sol
-        requestRandomness(keyHash, fee);
+        // Same as: byte32 requestId = requestRandomness(keyHash, fee);
+        bytes32 requestId = requestRandomness(keyHash, fee);
+        emit RequestedRandomness(requestId);
     }
 
     function fulfillRandomness(bytes32 _requestId, uint256 _randomness)
